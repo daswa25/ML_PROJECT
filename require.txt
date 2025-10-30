@@ -1,0 +1,5 @@
+#Libaries installed
+Pandas 
+numpy
+matplot
+openpyxl-for opening excel sheet
