@@ -1,5 +1,7 @@
 #Libaries installed
-Pandas 
-numpy
-matplot
+Pandas - data framing cleaning 
+numpy- numerical evaluvation 
+matplot- for plotting the graphs
 openpyxl-for opening excel sheet
+
+
