@@ -7,26 +7,33 @@ from shapely.geometry import Point
 import datetime as dt 
 #reading directory
 read_dir= os.listdir("data")
-print(read_dir)
-def load_data(path):
-    ext= os.path.splitext(path)[1]
-    if ext=='.csv':
-        df=pd.read_csv(path)
-        return df
-    elif ext in ['.xls','.xlsx']:
-        df=pd.read_excel(path)
-        return df
-    elif ext=='.ods':
-        df=pd.read_excel(path, engine='odf')
-        return df
+import pandas as pd
+import os
+import geopandas as gpd
+import datetime as dt
+
+def load_data(path, chunk=False):
+    ext = os.path.splitext(path)[1]
+    
+    if ext == '.csv':
+        if chunk:
+            return pd.read_csv(path, chunksize=50000)  
+        return pd.read_csv(path)
+        
+    elif ext in ['.xls', '.xlsx']:
+        return pd.read_excel(path)
+        
+    elif ext == '.ods':
+        return pd.read_excel(path, engine='odf')
+        
     else:
-        raise ValueError("Unsupported file format: {}".format(ext))
-    return df
+        raise ValueError(f"Unsupported file format: {ext}")
+
 #FRAMING THE WATER  QUALITY DATASET
-wq_data=load_data(r"data/2024.csv")
-flood_data=load_data(r"data/flood_datalogs.ods")
-text=""
-text+=f"dataset loading\n{dt.datetime.now()}"
+data_paths = [r"data/2024.csv", r"data/flood_datalogs.ods", r"data/uk_climate.csv"]
+datasets=[]
+text=[]
+
 
 class preprocessing():
     def __init__(self,data):
@@ -37,7 +44,7 @@ class preprocessing():
         
         return  data.columns
     def set_column_clean(self, flag):
-        data = self.data.copy()
+        data = self.data
     
         match(flag):
             case 0:
@@ -47,6 +54,7 @@ class preprocessing():
                 data['datetime_index'] = pd.to_datetime(data['datetime_index'], format='%Y-%m-%dT%H:%M:%S',errors='coerce')
                 data['date'] = data['datetime_index'].dt.date
                 data['time'] = data['datetime_index'].dt.time
+                data.dropna()
                 data=data.drop(['datetime_index'],axis=1)
                 return data.head(3)
             
@@ -56,10 +64,22 @@ class preprocessing():
                 data['datetime'] = pd.to_datetime(data['datetime'], errors='coerce', dayfirst=True)
                 data['date'] = data['datetime'].dt.date
                 data['time'] = data['datetime'].dt.time
+                #Deals with Missing value in column
+                data.dropna()
+                # Dropping the datetime column because it can mislead the dataset
                 data=data.drop(['datetime'],axis=1)
                 return data.head(3)
-            
+            case 2:
+                data.columns=['datetime','decade','year','season','month','day','day_in_year','temp','w_speed','precipitation','surface_runoff','dewpoint_temp']
+                data=data.drop(['decade','year','month','day','day_in_year'],axis=1)
+                data['datetime'] = data['datetime'].astype(str).str.strip().replace({'0': None, '': None})
+                data['datetime'] = pd.to_datetime(data['datetime'], errors='coerce', dayfirst=True)
+                data['date']=data['datetime'].dt.date
+                data.dropna()
+                data=data.drop(['datetime'],axis=1)
+                return data.head(3)
             case _:
+                
                 return "Something Error With the dataset cleaning"
 
 
@@ -68,15 +88,18 @@ class preprocessing():
             
                 
         
-#pre-processing
-data_process=[wq_data,flood_data]
-
-for i,data in enumerate(data_process):
-    text+=f"The flag is{i} and the data is {data}{dt.datetime.now()}\n"
+#loading datasets
+for path in data_paths:
+    data=load_data(path)
+    text.append(f"dataset {path} loading\n{dt.datetime.now()}")
+    datasets.append(data)
+#preprocessing
+for i,data in enumerate(datasets):
+    text.append(f"The flag is{i} and the data is {data.shape}{dt.datetime.now()}\n")
     data_clean=preprocessing(data)
-    text+=f"The dataset executed starts{dt.datetime.now()}\n"
+    text.append(f"The dataset executed starts{dt.datetime.now()}\n")
     print(data_clean.set_column_clean(i))
     
-text+=f"the dataset completed overall at {dt.datetime.now()}\n"
+text.append(f"the dataset completed overall at {dt.datetime.now()}\n")
 with open('log_today.txt','w') as f:
-    f.write(text)
+    f.write(f"\n".join(text))

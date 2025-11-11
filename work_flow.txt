@@ -1,0 +1,10 @@
+# multidimensional  cleaning for columns 
+
+### if the dataset has multiple columns while grouping the two or more datasets , then multidimensional  column array in that time we can use the following hack to avoid the duplicate data.
+
+## dataFrame.loc[:,~dataFrame.columns.duplicated()]
+:-> select all rows 
+, select particular column 
+~ not operator  
+where [] or dataframe.columns.duplicated()
+what it does ? it neglects the duplicate value with the not operator.
