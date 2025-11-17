@@ -11,7 +11,7 @@ import pandas as pd
 import os
 import geopandas as gpd
 import datetime as dt
-
+import duckdb as db 
 def load_data(path, chunk=False):
     ext = os.path.splitext(path)[1]
     
@@ -33,7 +33,7 @@ def load_data(path, chunk=False):
 data_paths = [r"data/2024.csv", r"data/flood_datalogs.ods", r"data/uk_climate.csv"]
 datasets=[]
 text=[]
-
+processed_datasets={}
 
 class preprocessing():
     def __init__(self,data):
@@ -56,7 +56,7 @@ class preprocessing():
                 data['time'] = data['datetime_index'].dt.time
                 data.dropna()
                 data=data.drop(['datetime_index'],axis=1)
-                return data.head(3)
+                return data
             
             case 1:
                 data.columns = ['datetime','area','Ucode','warning_name','type']
@@ -68,7 +68,7 @@ class preprocessing():
                 data.dropna()
                 # Dropping the datetime column because it can mislead the dataset
                 data=data.drop(['datetime'],axis=1)
-                return data.head(3)
+                return data
             case 2:
                 data.columns=['datetime','decade','year','season','month','day','day_in_year','temp','w_speed','precipitation','surface_runoff','dewpoint_temp']
                 data=data.drop(['decade','year','month','day','day_in_year'],axis=1)
@@ -77,7 +77,7 @@ class preprocessing():
                 data['date']=data['datetime'].dt.date
                 data.dropna()
                 data=data.drop(['datetime'],axis=1)
-                return data.head(3)
+                return data
             case _:
                 
                 return "Something Error With the dataset cleaning"
@@ -95,11 +95,18 @@ for path in data_paths:
     datasets.append(data)
 #preprocessing
 for i,data in enumerate(datasets):
+    key=f"dataset_{i+1}"
     text.append(f"The flag is{i} and the data is {data.shape}{dt.datetime.now()}\n")
     data_clean=preprocessing(data)
     text.append(f"The dataset executed starts{dt.datetime.now()}\n")
-    print(data_clean.set_column_clean(i))
+    processed_datasets[key]=data_clean.set_column_clean(i)
+    
     
 text.append(f"the dataset completed overall at {dt.datetime.now()}\n")
+df_1=processed_datasets['dataset_1']
+df_2=processed_datasets['dataset_2']
+df_3=processed_datasets['dataset_3']
+print(df_1.head(10))
+
 with open('log_today.txt','w') as f:
     f.write(f"\n".join(text))
