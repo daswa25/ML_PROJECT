@@ -6,7 +6,7 @@
 ![Scikit-Learn](https://img.shields.io/badge/ML-Scikit--Learn-yellow)
 ![Status](https://img.shields.io/badge/Status-Completed-success)
 
-## 📌 Project Overview
+## Project Overview
 This project presents a robust data science framework for analyzing the dependencies between hydro-meteorological parameters (Rainfall, Temperature) and river health indices (Dissolved Oxygen, BOD) across the United Kingdom.
 
 Using a multi-source dataset comprising decadal climate records and high-frequency water quality sampling, the project employs **Random Forest**, **XGBoost**, and **Deep Neural Networks (ANN)** to predict environmental hazards.
