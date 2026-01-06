@@ -12,6 +12,20 @@ This project presents a robust data science framework for analyzing the dependen
 Using a multi-source dataset comprising decadal climate records and high-frequency water quality sampling, the project employs **Random Forest**, **XGBoost**, and **Deep Neural Networks (ANN)** to predict environmental hazards.
 
 ## Repository Structure
+### UK Environment Agency (Water Quality Archive) & Met Office.
+
+## Data Processing:
+The cleaning logic is preserved in finalMain.ipynb (specifically the cleanData class).
+
+## Training Data: 
+### The data/ folder contains the pre-processed, cleaned, and engineered datasets required to run the machine learning models immediately. You do not need the raw files to run the modeling sections.
+## Methodology Highlights
+
+    EDA: Confirmed the "Dilution Effect" (Pollution concentration decreases during extreme storms) and validated Henry's Law (Temperature vs. Oxygen).
+
+    Normalization: Applied Log-Transformation (np.log1p) to BOD data to fix severe right-skewness before Neural Network training.
+
+    Error Testing: Implemented strict sanity filters to ensure no physical impossibilities (e.g., pH > 14 or DO < 0) entered the model.
 
 ```text
 ├── data/                      # PROCESSED Data (Training Ready) from uk gov
@@ -25,5 +39,5 @@ Using a multi-source dataset comprising decadal climate records and high-frequen
      # Cleaned/Merged Water Metrics
 ├── finalMain.ipynb            # MAIN NOTEBOOK: ETL, EDA, and Modeling
 ├── README.md                  # Project Documentation
-└── requirements.txt           # Dependencies
+└── requirements.txt           # Dependencies '''
 
