@@ -1,5 +1,5 @@
-# Integrated Analysis of Climatological Variables on Fluvial Water Quality & Flood Risk (UK)
-### Master's Thesis Project | MSc Data Science
+# Water Quality Prediction using Feed Forward Neural Network with Historical Flood and climate data
+### MSc Data Science
 **Author:** Daswadayalan M. Deenadayalan
 ![Python](https://img.shields.io/badge/Python-3.9%2B-blue)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-Keras-orange)
@@ -11,7 +11,7 @@ This project presents a robust data science framework for analyzing the dependen
 
 Using a multi-source dataset comprising decadal climate records and high-frequency water quality sampling, the project employs **Random Forest**, **XGBoost**, and **Deep Neural Networks (ANN)** to predict environmental hazards.
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```text
 ├── data/                      # PROCESSED Data (Training Ready) from uk gov
@@ -26,3 +26,4 @@ Using a multi-source dataset comprising decadal climate records and high-frequen
 ├── finalMain.ipynb            # MAIN NOTEBOOK: ETL, EDA, and Modeling
 ├── README.md                  # Project Documentation
 └── requirements.txt           # Dependencies
+
